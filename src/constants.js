@@ -9,17 +9,17 @@ export const Products = {
   },
 };
 
-export const Offers = [
-  {
+export const Offers = {
+  Offer1: {
     name: '"Buy one, get one free" on Apples',
-    productType: Products.Apple,
+    productType: "Apple",
     totalCount: 2,
     priceCount: 1,
   },
-  {
+  Offer2: {
     name: '"3 for the price of 2" on Oranges',
-    productType: Products.Orange,
+    productType: "Orange",
     totalCount: 3,
     priceCount: 2,
   },
-];
+};

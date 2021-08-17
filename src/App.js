@@ -1,12 +1,23 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState } from "react";
 
-import { Products } from "./constants";
-import { ProductList, ShoppingCart } from "./components";
+import { Products, Offers } from "./constants";
+import {
+  ProductList,
+  ShoppingCart,
+  OffersList,
+  TotalPrice,
+} from "./components";
 
 import "./App.css";
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
+  const [selectedOffers, setSelectedOffers] = useState(
+    Object.keys(Offers).reduce(
+      (acc, offerKey) => ({ ...acc, [offerKey]: false }),
+      {}
+    )
+  );
 
   const addToCart = useCallback((newProduct) => {
     setShoppingCart((productsInCart) => [...productsInCart, newProduct]);
@@ -18,12 +29,12 @@ function App() {
     );
   }, []);
 
-  const totalCost = useMemo(() => {
-    return shoppingCart.reduce(
-      (sum, product) => sum + Products[product].price,
-      0
-    );
-  }, [shoppingCart]);
+  const toggleOffer = useCallback((offerKey) => {
+    setSelectedOffers((oldOffers) => ({
+      ...oldOffers,
+      [offerKey]: !oldOffers[offerKey],
+    }));
+  }, []);
 
   return (
     <div className="App">
@@ -31,9 +42,19 @@ function App() {
 
       <ProductList products={Products} addToCart={addToCart} />
 
-      <h3>
-        Total Cost: <strong>${totalCost.toFixed(2)}</strong>
-      </h3>
+      <OffersList
+        offers={Offers}
+        setOffers={Offers}
+        selectedOffers={selectedOffers}
+        toggleOffer={toggleOffer}
+      />
+
+      <TotalPrice
+        products={Products}
+        offers={Offers}
+        shoppingCart={shoppingCart}
+        selectedOffers={selectedOffers}
+      />
 
       <ShoppingCart
         products={Products}
