@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { useCallback, useState, useMemo } from "react";
+
+import { Products } from "./constants";
+import { ProductList, ShoppingCart } from "./components";
+
+import "./App.css";
 
 function App() {
+  const [shoppingCart, setShoppingCart] = useState([]);
+
+  const addToCart = useCallback((newProduct) => {
+    setShoppingCart((productsInCart) => [...productsInCart, newProduct]);
+  }, []);
+
+  const removeProduct = useCallback((index) => {
+    setShoppingCart((productsInCart) =>
+      productsInCart.filter((_product, i) => i !== index)
+    );
+  }, []);
+
+  const totalCost = useMemo(() => {
+    return shoppingCart.reduce(
+      (sum, product) => sum + Products[product].price,
+      0
+    );
+  }, [shoppingCart]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Shopping Cart</h1>
+
+      <ProductList products={Products} addToCart={addToCart} />
+
+      <h3>
+        Total Cost: <strong>${totalCost.toFixed(2)}</strong>
+      </h3>
+
+      <ShoppingCart
+        products={Products}
+        shoppingCart={shoppingCart}
+        removeProduct={removeProduct}
+      />
     </div>
   );
 }
